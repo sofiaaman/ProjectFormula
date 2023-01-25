@@ -1,6 +1,12 @@
 package models;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class ResultModel {
+
+    private int lineNumber;
     private String abr;
     private String name;
     private String team;
@@ -8,7 +14,18 @@ public class ResultModel {
     private String timeEnd;
     private String dateStart;
     private String dateEnd;
-    private String time;
+    private LocalDateTime timeStartResult;
+    private LocalDateTime timeEndResult;
+    private long durationTimeMillis;
+    private String durationTimeStr;
+
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    public void setLineNumber(int i) {
+        this.lineNumber = i + 1;
+    }
 
     public String getAbr() {
         return abr;
@@ -66,27 +83,67 @@ public class ResultModel {
         this.dateEnd = dateEnd;
     }
 
-    public String getTime(String time) {
-        //return Duration.between(timeStart, timeEnd);
-        return time;
+    public LocalDateTime getTimeStartResult() {
+        return timeStartResult;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setTimeStartResult(String dateStart, String timeStart) {
+        DateTimeFormatter formatter
+                = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        String text = dateStart + " " + timeStart;
+        this.timeStartResult = LocalDateTime.parse(text, formatter);
+    }
+
+    public LocalDateTime getTimeEndResult() {
+        return timeEndResult;
+    }
+
+    public void setTimeEndResult(String dateEnd, String timeEnd) {
+        DateTimeFormatter formatter
+                = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        String text = dateEnd + " " + timeEnd;
+        this.timeEndResult = LocalDateTime.parse(text, formatter);
+    }
+
+    public String getDurationTimeStr() {
+        return durationTimeStr;
+    }
+
+    public void setDurationTimeStr(LocalDateTime timeStartResult, LocalDateTime timeEndResult) {
+        long ms = Duration.between(timeStartResult, timeEndResult).toMillis();
+        long millis = ms % 1000;
+        long x = ms / 1000;
+        long seconds = x % 60;
+        x /= 60;
+        long minutes = x % 60;
+        this.durationTimeStr = String.format("%02d:%02d.%03d", minutes, seconds, millis);
+    }
+
+    public long getDurationTimeMillis() {
+        return durationTimeMillis;
+    }
+
+    public void setDurationTimeMillis(LocalDateTime timeStartResult, LocalDateTime timeEndResult) {
+        this.durationTimeMillis = Duration.between(timeStartResult, timeEndResult).toMillis();
     }
 
     @Override
     public String toString() {
         return "ResultModel{" +
-                "abr='" + abr + '\'' +
+                "line='" + lineNumber + '\'' +
+                ", abr='" + abr + '\'' +
                 ", name='" + name + '\'' +
                 ", team='" + team + '\'' +
                 ", dateStart='" + dateStart + '\'' +
                 ", timeStart='" + timeStart + '\'' +
                 ", dateEnd='" + dateEnd + '\'' +
                 ", timeEnd='" + timeEnd + '\'' +
-                ", time='" + time + '\'' +
+                ", time='" + durationTimeStr + '\'' +
+                ", timeMillis='" + durationTimeMillis + '\'' +
                 '}';
     }
 
+    public void printRaceResult() {
+        System.out.printf("%5s %3s %20s %5s %30s %5s %10s%n", this.getLineNumber(), "|", this.getName(), "|", this.getTeam(), "|", this.getDurationTimeStr());
+    }
 }

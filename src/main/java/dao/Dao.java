@@ -13,70 +13,55 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Dao {
-    //метод для чтения файла abbreviations.txt
 
-    //Задание 1. Преобразуем файл abbreviations.txt
-    //Нужно распарсить данные из файла abbreviations.txt в модель гонщика
-    // разуем каждую строку файла в модель гонщика
+    private InputStream convertTxtToInputStream(String fileName) {
+        ClassLoader classLoader = Dao.class.getClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream(fileName);
+        assert inputStream != null;
+        return inputStream;
+    }
 
     public List<RacerModel> getListOfRacers() {
-        ClassLoader classLoader = Dao.class.getClassLoader();  // загрузчик класса
-        List<RacerModel> racerModels; //коллекция из гонщиков
-
+        List<RacerModel> racerModels;
         try
-                (InputStream inputStream = classLoader.getResourceAsStream("abbreviations.txt")) {
-            assert inputStream != null;
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);//читает посимвольно
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader); //буфер, в который записываются символы
-            // bufferedReader.readLine();
-            //у BufferedReader есть метод, который может читать все строки из файла как поток.
+                (InputStream inputStream = convertTxtToInputStream("abbreviations.txt")) {
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             racerModels =
-                    bufferedReader.lines() //строка из txt файла
-                            .map(line -> line.split("_")) //разделение каждой строки по _,массив строк с подстроками
-                            .map(str -> {   //если нужно произвести несколько действий над str то это пишем в {}
+                    bufferedReader.lines()
+                            .map(line -> line.split("_"))
+                            .map(str -> {
                                 RacerModel racerModel = new RacerModel();
-                                //[ [DRR] [Daniel Ricciardo] [RED BULL RACING TAG HEUER]
-                                //[SVF] [Sebastian Vettel] [FERRARI] ]
                                 racerModel.setRacerAbbreviation(str[0]);
                                 racerModel.setRacerName(str[1]);
                                 racerModel.setRacerTeam(str[2]);
-                                //System.out.println(racerModel.toString());
                                 return racerModel;
                             }).collect(Collectors.toList());
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return racerModels;
     }
 
-    public String changeString(String s) {
-        StringBuffer sb = new StringBuffer(s);
+    private String changeString(String s) {
+        StringBuilder sb = new StringBuilder(s);
         sb.insert(3, "_");
         return sb.toString();
     }
 
-    //метод для чтения файла end.txt
     public List<TimeEndModel> getListOfEndTimes() {
-        ClassLoader classLoader = Dao.class.getClassLoader();  // загрузчик класса
-
         try
-                (InputStream inputStream = classLoader.getResourceAsStream("end.txt")) {
+                (InputStream inputStream = convertTxtToInputStream("end.txt")) {
             assert inputStream != null;
             InputStreamReader inputStreamReader =
-                    new InputStreamReader(inputStream, StandardCharsets.UTF_8);//читает посимвольно
+                    new InputStreamReader(inputStream, StandardCharsets.UTF_8);
             BufferedReader bufferedReader =
-                    new BufferedReader(inputStreamReader); //буфер, в который записываются символы
-
-//            Stream<String> list1 = bufferedReader.lines();
-//            List<String> Test2 = list1.map(line -> changeString(line)).collect(Collectors.toList());
-
-            //cначала добавляем в line "_" с помощью changeString, а потом разделяем строку по этому символу
-            List<String> list = bufferedReader.lines().map(line -> changeString(line)).collect(Collectors.toList());
+                    new BufferedReader(inputStreamReader);
 
             List<TimeEndModel> timeEndModelList;
             timeEndModelList =
-                    list.stream()
+                    bufferedReader.lines()
+                            .map(this::changeString)
                             .map(e -> e.split("_"))
                             .map(str -> {
                                 TimeEndModel timeEndModel = new TimeEndModel();
@@ -86,25 +71,20 @@ public class Dao {
                                 return timeEndModel;
                             })
                             .collect(Collectors.toList());
-
             return timeEndModelList;
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    //Метод 3. Чтение из файла start.txt
     public List<TimeStartModel> getListOfStartTimes() {
-        ClassLoader classLoader = Dao.class.getClassLoader();  // загрузчик класса
-
         try
-                (InputStream inputStream = classLoader.getResourceAsStream("start.txt")) {
-            assert inputStream != null;
+                (InputStream inputStream = convertTxtToInputStream("start.txt")) {
+
             InputStreamReader inputStreamReader =
-                    new InputStreamReader(inputStream, StandardCharsets.UTF_8);//читает посимвольно
+                    new InputStreamReader(inputStream, StandardCharsets.UTF_8);
             BufferedReader bufferedReader =
-                    new BufferedReader(inputStreamReader); //буфер, в который записываются символы
+                    new BufferedReader(inputStreamReader);
 
             List<TimeStartModel> timeStartModelList;
             timeStartModelList =
@@ -113,24 +93,14 @@ public class Dao {
                             .map(str -> {
                                 TimeStartModel timeStartModel = new TimeStartModel();
                                 timeStartModel.setAbr(str[0].substring(0, 3));
-                                timeStartModel.setDate(str[0].substring(3,str[0].length()));
+                                timeStartModel.setDate(str[0].substring(3, str[0].length()));
                                 timeStartModel.setTime(str[1]);
                                 return timeStartModel;
                             })
                             .collect(Collectors.toList());
-
             return timeStartModelList;
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
-//    public static void main(String[] args) {
-//        Dao dao = new Dao();
-//        System.out.println(dao.getListOfEndTimes());
-//        System.out.println(dao.getListOfStartTimes());
-//    }
-
-
 }

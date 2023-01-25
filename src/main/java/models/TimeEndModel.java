@@ -10,7 +10,6 @@ public class TimeEndModel {
     }
 
     public void setAbr(String abr) {
-
         this.abr = abr;
     }
 
@@ -18,11 +17,9 @@ public class TimeEndModel {
         return date;
     }
 
-
     public void setDate(String date) {
         this.date = date;
     }
-
 
     public String getTime() {
         return time;
@@ -40,5 +37,4 @@ public class TimeEndModel {
                 ", time='" + time + '\'' +
                 '}';
     }
-
 }
