@@ -93,7 +93,7 @@ public class Dao {
                             .map(str -> {
                                 TimeStartModel timeStartModel = new TimeStartModel();
                                 timeStartModel.setAbr(str[0].substring(0, 3));
-                                timeStartModel.setDate(str[0].substring(3, str[0].length()));
+                                timeStartModel.setDate(str[0].substring(3));
                                 timeStartModel.setTime(str[1]);
                                 return timeStartModel;
                             })

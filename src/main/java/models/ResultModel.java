@@ -127,6 +127,10 @@ public class ResultModel {
         this.durationTimeMillis = Duration.between(timeStartResult, timeEndResult).toMillis();
     }
 
+    public void printRaceResult() {
+        System.out.printf("%5s %3s %20s %5s %30s %5s %10s%n", this.getLineNumber(), "|", this.getName(), "|", this.getTeam(), "|", this.getDurationTimeStr());
+    }
+
     @Override
     public String toString() {
         return "ResultModel{" +
@@ -141,9 +145,5 @@ public class ResultModel {
                 ", time='" + durationTimeStr + '\'' +
                 ", timeMillis='" + durationTimeMillis + '\'' +
                 '}';
-    }
-
-    public void printRaceResult() {
-        System.out.printf("%5s %3s %20s %5s %30s %5s %10s%n", this.getLineNumber(), "|", this.getName(), "|", this.getTeam(), "|", this.getDurationTimeStr());
     }
 }

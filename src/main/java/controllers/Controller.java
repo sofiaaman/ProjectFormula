@@ -7,8 +7,8 @@ import java.util.List;
 
 public class Controller {
 
-    public static void main(String[] args) {
-        System.out.printf("%5s %3s %20s %5s %30s %5s %10s%n", "Place", "|", "Name", "|", "Team", "|", "Time");
+    public void printResult() {
+        System.out.printf("%5s %3s %20s %5s %30s %5s %10s%n", "Rank", "|", "Driver", "|", "Team", "|", "Time");
         System.out.printf("%s%n", "---------------------------------------------------------------------------------------");
         List<ResultModel> sortedResultModelList = new Service().getSortedResultModel();
 
@@ -29,5 +29,10 @@ public class Controller {
                 .filter(ResultModel -> ResultModel.getLineNumber() > 15)
                 .peek(ResultModel::printRaceResult)
                 .toList();
+    }
+
+    public static void main(String[] args) {
+        Controller controller = new Controller();
+        controller.printResult();
     }
 }
